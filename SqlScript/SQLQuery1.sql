@@ -1,6 +1,7 @@
 CREATE DATABASE TestTaskDb
 
 USE TestTaskDb
+GO
 
 CREATE TABLE [Provider](
 	[Id] INT PRIMARY KEY IDENTITY,
@@ -23,3 +24,14 @@ CREATE TABLE [OrderItem](
 
 	CONSTRAINT FK_OrderItem_Order_OrderId FOREIGN KEY (OrderId)  REFERENCES [Order] (Id) ON DELETE CASCADE
 )
+
+INSERT INTO [Provider](name)
+VALUES ('provider 1')
+
+INSERT INTO [Provider](name)
+VALUES ('provider 2')
+
+INSERT INTO [Provider](name)
+VALUES ('provider 3')
+
+GO
