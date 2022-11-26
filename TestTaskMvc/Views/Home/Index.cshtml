@@ -1,0 +1,144 @@
+﻿@model TestTaskMvc.Models.ViewModel.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+    DateTime date = DateTime.Now;
+    var dateNow = date.ToString("yyyy-MM-ddTHH:mm");
+    DateTime dateLastMounht = date.AddMonths(-1);
+    string dateLastMount = dateLastMounht.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-controller="Order" asp-action="Create" class="btn btn-primary">Create New Order</a>
+</p>
+
+<h3>
+    Фильтрация
+</h3>
+
+
+<h2 style="color: green">
+    @ViewData["MessageFilter"]
+</h2>
+<form asp-action="Filter">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Дата от:</label>
+            <input class="form-control" type="datetime-local" value="@dateLastMount" id="DateFrom" name="DateFrom" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Дата до:</label>
+            <input class="form-control" type="datetime-local" value="@dateNow" id="DateTo" name="DateTo"/>
+        </div>
+
+        <div class="col">
+            <label class="form-label">Order Number</label>
+
+            @*<select multiple class="form-control" asp-items="ViewBag.Order" id="OrderNumberFilter" name="OrderNumberFilter"></select>*@
+
+            <select multiple class="form-control valid" asp-for="FilterSelectList.OrderSelectList" asp-items="Model.FilterSelectList.OrderSelectList" id="OrderNumberFilter" name="OrderNumberFilter"></select>
+        </div>
+
+        <div class="col">
+            <label class="form-label">OrderItem Name</label>
+            @*<select multiple class="form-control" asp-items="ViewBag.OrderItemName" id="OrderItemNameFilter" name="OrderItemNameFilter"></select>*@
+            <select multiple class="form-control" asp-for="FilterSelectList.OrderItemNameSelectList" asp-items="Model.FilterSelectList.OrderItemNameSelectList" id="OrderItemNameFilter" name="OrderItemNameFilter"></select>
+
+        </div>
+
+        <div class="col">
+            <label class="form-label">OrderItemUnit</label>
+            @*<select multiple class="form-control" asp-items="ViewBag.OrderItemName" id="OrderItemNameFilter" name="OrderItemNameFilter"></select>*@
+            
+            <select multiple class="form-control" asp-for="FilterSelectList.OrderItemUnitSelectList" asp-items="Model.FilterSelectList.OrderItemUnitSelectList" id="OrderItemUnitFilter" name="OrderItemUnitFilter"></select>
+        </div>
+
+        <div class="col">
+            <label class="form-label">Provider</label>
+            @*<select multiple class="form-control" asp-items="ViewBag.Provider" id="ProviderId" name="ProviderId"></select>*@
+
+            <select multiple class="form-control" asp-items="Model.FilterSelectList.ProviderSelectList" id="ProviderId" name="ProviderId"></select>
+        </div>
+
+        </ th>
+        <div class="form-group">
+            <input type="submit" value="Фильтр" class="btn btn-primary" />
+        </div>
+    </div>
+</form>
+
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Order Number
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Provider Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is not null)
+        {
+            @foreach (var item in Model.Order)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Provider.Name)
+                    </td>
+                    <td>
+                        <a asp-controller="Order" asp-action="Edit" asp-route-id="@item.Id">Изменить заказ</a> |
+                        <a asp-controller="Order" asp-action="Details" asp-route-id="@item.Id">Детали заказа</a> |
+                        <a asp-controller="Order" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th> OrderItem Name </th>
+                                    <th> OrderItem Quantity </th>
+                                    <th> OrderItem Unit </th>
+                                </tr>
+                            <tbody>
+                                @foreach (var orderItem in Model.OrderItem)
+                                {
+                                        @if (orderItem.OrderId == item.Id)
+                                        {
+                                            <tr>
+                                                <td class="table-info">
+                                                        @Html.DisplayFor(modeItem => orderItem.Name)
+                                                </td>
+                                                <td class="table-info">
+                                                        @Html.DisplayFor(modeItem => orderItem.Quantity)
+                                                </td>
+                                                <td class="table-info">
+                                                        @Html.DisplayFor(modeItem => orderItem.Unit)
+                                                </td>
+                                            </tr>
+                                        }
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
